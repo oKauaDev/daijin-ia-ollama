@@ -12,7 +12,7 @@ async function main() {
   const app = express();
   const route = Router();
   const DaijinIA = new IA();
-  await DaijinIA.download();
+  await DaijinIA.init();
 
   console.log("◇ Ligando o servidor...");
 

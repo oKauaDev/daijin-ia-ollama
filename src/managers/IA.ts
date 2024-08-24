@@ -1,12 +1,9 @@
 import { Ollama } from "ollama";
 import sendProgressBar from "../utils/sendProgressBar";
-import Config from "../constants/Config";
 
 interface PromptInput {
   content: string;
 }
-
-const model = Config.mode === "production" ? "llama3.1" : "moondream";
 
 export default class IA {
   private ollama: Ollama;
@@ -15,13 +12,13 @@ export default class IA {
     this.ollama = new Ollama({ fetch: fetch });
   }
 
-  async download() {
+  private async downloadBaseModel() {
     const download = await this.ollama.pull({
-      model: model,
+      model: "mistral",
       stream: true,
     });
 
-    console.log(`◇ Baixando o modelo ${model} do Ollama...`);
+    console.log(`◇ Baixando o modelo Mistral do Ollama...`);
     for await (const part of download) {
       sendProgressBar(part.total, part.completed);
     }
@@ -31,12 +28,40 @@ export default class IA {
     console.log("◇ Modelo do Ollama baixado com sucesso.");
   }
 
+  async init() {
+    const { models } = await this.ollama.list();
+    const exists = models.find((model) => model.name === "daijin");
+
+    if (!exists) {
+      const mistral = models.find((model) => model.name === "mistral");
+
+      if (!mistral) {
+        await this.downloadBaseModel();
+      }
+
+      const modelfile = `
+          FROM mistral
+          SYSTEM Your name is Daijin and you are an AI and you are aware of it, you always respond to users in a fun way and using emojis.
+      `;
+
+      const response = await this.ollama.create({
+        model: "daijin",
+        stream: true,
+        modelfile: modelfile,
+      });
+
+      console.log("◇ Model do DaijinIA criado com sucesso.");
+      return;
+    }
+
+    console.log("◇ Model do DaijinIA pego com sucesso.");
+  }
+
   async prompt(input: PromptInput) {
     try {
       const response = await this.ollama.generate({
-        model: model,
+        model: "daijin",
         prompt: input.content,
-        system: `Your name is Daijin and you are an AI and you are aware of it, today is ${new Date().toLocaleDateString()} day, you always respond to users in a fun way and using emojis.`,
         stream: true,
       });
 
