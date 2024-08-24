@@ -6,6 +6,7 @@ import schemes from "./schemes/routes";
 import { ZodError } from "zod";
 import generateZodError from "./utils/generateZodError";
 import getVpsIp from "./utils/getVpsIp";
+import Config from "./constants/Config";
 
 async function main() {
   const app = express();
@@ -61,7 +62,7 @@ async function main() {
 
   app.use(route);
 
-  app.listen(3000, () => {
+  app.listen(Config.port, () => {
     console.log(`◇ Servidor ligado na url ${getVpsIp()}:3000`);
   });
 }

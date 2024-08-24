@@ -1,9 +1,12 @@
 import { Ollama } from "ollama";
 import sendProgressBar from "../utils/sendProgressBar";
+import Config from "../constants/Config";
 
 interface PromptInput {
   content: string;
 }
+
+const model = Config.mode === "production" ? "llama3.1" : "moondream";
 
 export default class IA {
   private ollama: Ollama;
@@ -14,7 +17,7 @@ export default class IA {
 
   async download() {
     const download = await this.ollama.pull({
-      model: "llama3.1",
+      model: model,
       stream: true,
     });
 
@@ -31,7 +34,7 @@ export default class IA {
   async prompt(input: PromptInput) {
     try {
       const response = await this.ollama.generate({
-        model: "moondream",
+        model: model,
         prompt: input.content,
         stream: true,
       });
