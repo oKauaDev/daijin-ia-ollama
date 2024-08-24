@@ -14,11 +14,11 @@ export default class IA {
 
   async download() {
     const download = await this.ollama.pull({
-      model: "moondream",
+      model: "llama3.1",
       stream: true,
     });
 
-    console.log("◇ Baixando o modelo Moondream do Ollama...");
+    console.log("◇ Baixando o modelo LLama3.1 do Ollama...");
     for await (const part of download) {
       sendProgressBar(part.total, part.completed);
     }
