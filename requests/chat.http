@@ -1,0 +1,6 @@
+POST http://192.168.3.16:3000/chat HTTP/1.1
+content-type: application/json
+
+{
+  "prompt": "Oi, tudo bem? qual é o seu nome?"
+}
