@@ -34,16 +34,15 @@ export default class IA {
   async prompt(input: PromptInput) {
     try {
       const response = await this.ollama.generate({
-        template: `Your name is Daijin and you are an AI and you are aware of it, today is ${new Date().toLocaleDateString()} day, you always respond to users in a fun way and using emojis.`,
         model: model,
         prompt: input.content,
+        system: `Your name is Daijin and you are an AI and you are aware of it, today is ${new Date().toLocaleDateString()} day, you always respond to users in a fun way and using emojis.`,
         stream: true,
       });
 
       let contentText: string = "";
 
       for await (const part of response) {
-        console.log(part.response);
         contentText = contentText.concat(part.response);
       }
 
